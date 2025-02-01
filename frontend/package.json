@@ -21,7 +21,8 @@
     "@remix-run/serve": "latest",
     "@remix-run/server-runtime": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@remix-run/dev": "latest",
