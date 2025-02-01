@@ -1,26 +1,48 @@
-const WebSocket = require("ws");
+const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 3000 });
 
-wss.on("connection", (ws) => {
-  console.log("A user connected");
+const users = {};
 
-  ws.on("message", (message) => {
-    const decodedMessage = message.toString();
-    console.log("Received:", decodedMessage);
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    const data = JSON.parse(message);
 
-    // Send message to all connected clients
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(decodedMessage);
+    if (data.type === 'SET_USERNAME') {
+      users[data.payload.username] = { ws, userType: data.payload.userType };
+      broadcastUserList();
+    }
+
+    if (data.type === 'PUBLIC_MESSAGE') {
+      broadcast({ type: 'PUBLIC_MESSAGE', payload: data.payload });
+    }
+
+    if (data.type === 'PRIVATE_MESSAGE') {
+      const recipientSocket = users[data.payload.recipient]?.ws;
+      if (recipientSocket) {
+        recipientSocket.send(JSON.stringify({ type: 'PRIVATE_MESSAGE', payload: data.payload }));
       }
-    });
+    }
   });
 
-  ws.on("close", () => {
-    console.log("A user disconnected");
+  ws.on('close', () => {
+    for (const user in users) {
+      if (users[user].ws === ws) {
+        delete users[user];
+        broadcastUserList();
+        break;
+      }
+    }
   });
 });
 
-console.log("WebSocket server running on ws://localhost:3000");
+function broadcast(data) {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
+}
 
-
+function broadcastUserList() {
+  broadcast({ type: 'USER_LIST', payload: Object.keys(users) });
+}
