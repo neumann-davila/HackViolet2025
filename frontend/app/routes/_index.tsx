@@ -1,12 +1,13 @@
 import * as React from 'react';
+import { Link, useNavigate } from "react-router-dom";
 import type { MetaFunction } from '@remix-run/node';
 import { Link as RemixLink, useLocation } from '@remix-run/react';
-import { Typography, Box, Container, Tabs, Tab, TextField, Button} from '@mui/material';
+import { Typography, Box, Container, Tabs, Tab, TextField, Button, Stack} from '@mui/material';
 import darkTheme from '~/src/theme';
 
 export const meta: MetaFunction = () => [
-  { title: 'Remix with Material UI' },
-  { name: 'Fun Little Template', content: 'Welcome to my site!' },
+  { title: 'Teacher Aid' },
+  { name: 'A classroom tool to help bridge the gap between teacher and student', content: 'Welcome to Teacher Aid!' },
 ];
 
 export default function Index() {
@@ -48,22 +49,9 @@ export default function Index() {
         }}>
           Teacher Aid
         </Typography>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8'}}>
-          <Typography 
-          variant='h4' 
-          sx={{
-            mr: 4,
-            display: 'flex',
-            fontWeight: 500,
-            color: 'inherit',
-            textDecoration: 'none',
-          }}>
-            Enter Code:
-          </Typography>
-          <TextField id="code-entry" label="" variant="standard" />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center'}}>
-          <Typography 
+        <Stack spacing={2}>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Typography 
             variant='h4' 
             sx={{
               mr: 4,
@@ -72,10 +60,25 @@ export default function Index() {
               color: 'inherit',
               textDecoration: 'none',
             }}>
-            Are you a teacher? Make an account now!
-          </Typography>
-          <Button variant="contained">Sign Up</Button>
-        </div>
+              Enter Code:
+            </Typography>
+            <TextField id="code-entry" label="" variant="standard" />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Typography 
+              variant='h4' 
+              sx={{
+                mr: 4,
+                display: 'flex',
+                fontWeight: 500,
+                color: 'inherit',
+                textDecoration: 'none',
+              }}>
+              Are you a teacher? Make an account now!
+            </Typography>
+            <Button variant="contained">Sign Up</Button>
+          </div>
+        </Stack>
       </Container>
 
       <Container disableGutters maxWidth='xl' sx={{
@@ -93,22 +96,9 @@ export default function Index() {
         }}>
           Teacher Aid
         </Typography>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8'}}>
-        <Typography 
-          variant='h4' 
-          sx={{
-            mr: 4,
-            display: 'flex',
-            fontWeight: 500,
-            color: 'inherit',
-            textDecoration: 'none',
-          }}>
-            Enter Code:
-          </Typography>
-          <TextField id="code-entry" label="" variant="standard" />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center'}}>
-          <Typography 
+        <Stack spacing={2}>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Typography 
             variant='h4' 
             sx={{
               mr: 4,
@@ -117,10 +107,25 @@ export default function Index() {
               color: 'inherit',
               textDecoration: 'none',
             }}>
-            Are you a teacher? Make an account now!
-          </Typography>
-          <Button variant="contained">Sign Up</Button>
-        </div>
+              Enter Code:
+            </Typography>
+            <TextField id="code-entry" label="" variant="standard" />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Typography 
+              variant='h4' 
+              sx={{
+                mr: 4,
+                display: 'flex',
+                fontWeight: 500,
+                color: 'inherit',
+                textDecoration: 'none',
+              }}>
+              Are you a teacher? Make an account now!
+            </Typography>
+            <Button variant="contained">Sign Up</Button>
+          </div>
+        </Stack>
       </Container>
 
       <Container disableGutters maxWidth='xl' sx={{
@@ -138,34 +143,36 @@ export default function Index() {
         }}>
           Teacher Aid
         </Typography>
-        <div style={{ display: 'flex', alignItems: 'center'}}>
-          <Typography 
-          variant='h4' 
-          sx={{
-            mr: 4,
-            display: 'flex',
-            fontWeight: 500,
-            color: 'inherit',
-            textDecoration: 'none',
-          }}>
-            Enter Code:
-          </Typography>
-          <TextField id="code-entry" label="" variant="standard" />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center'}}>
-          <Typography 
-          variant='h4' 
-          sx={{
-            mr: 4,
-            display: 'flex',
-            fontWeight: 500,
-            color: 'inherit',
-            textDecoration: 'none',
-          }}>
-            Are you a teacher? Make an account now!
-          </Typography>
-          <Button variant="contained">Sign Up</Button>
-        </div>
+        <Stack spacing={2}>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Typography 
+            variant='h4' 
+            sx={{
+              mr: 4,
+              display: 'flex',
+              fontWeight: 500,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}>
+              Enter Code:
+            </Typography>
+            <TextField id="code-entry" label="" variant="standard" />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Typography 
+              variant='h4' 
+              sx={{
+                mr: 4,
+                display: 'flex',
+                fontWeight: 500,
+                color: 'inherit',
+                textDecoration: 'none',
+              }}>
+              Are you a teacher? Make an account now!
+            </Typography>
+            <Button variant="contained">Sign Up</Button>
+          </div>
+        </Stack>
       </Container>
     </React.Fragment>
   );

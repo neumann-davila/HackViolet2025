@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -93,7 +93,9 @@ function ResponsiveAppBar() {
                 color: 'inherit',
                 textDecoration: 'none',
               }}/>
-            <Avatar {...stringAvatar('Neumann Davila')} />
+            <Avatar {...stringAvatar('Neumann Davila')} 
+            sx={{ cursor: "pointer" }}
+            />
           </div>
         </Toolbar>
       </Container>
