@@ -34,9 +34,11 @@ app.post('/', async (req, res) => {
 
 app.put('/signUp', async (req, res) => {
   try {
-    MongoDBOrchestrator.newUser(req.body);
+    console.log(req.body);
+    await MongoDBOrchestrator.newUser(req.body);
   } catch (error) {
     console.error("Error with MongoDB Atlas");
+    console.error(error);
     res.status(500).json({ error: 'Something went wrong with MongoDB Atlas.' });
   }
 })

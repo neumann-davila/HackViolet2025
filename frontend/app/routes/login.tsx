@@ -55,8 +55,8 @@ export default function Login() {
 			setLoginSuccess(true);
 
 			/* Use to retrieve data
-			 *document.getElementById("result").innerHTML = localStorage.getItem("userName"); 
-				*/
+			 * document.getElementById("result").innerHTML = localStorage.getItem("userName"); 
+			*/
 			localStorage.setItem("userName", answer.name);
 
 		} else {

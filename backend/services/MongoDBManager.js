@@ -6,17 +6,16 @@ const client = new MongoClient(uri);
 
 
 async function newUser(userInfo) {
+    // Connect to the Atlas cluster
+    await client.connect();
 
-        // Connect to the Atlas cluster
-        await client.connect();
+    // Get the database and collection on which to run the operation
+    const db = client.db("teacherAid");
+    const users = db.collection("users");
 
-        // Get the database and collection on which to run the operation
-        const db = client.db("teacherAid");
-        const users = db.collection("users");
-
-        // Insert the documents into the specified collection        
-        const p = await users.insertMany(userInfo);
-        await client.close();
+    // Insert the documents into the specified collection        
+    const p = await users.insertMany([userInfo]);
+    await client.close();
 }
 
 async function getUser(userEmail) {

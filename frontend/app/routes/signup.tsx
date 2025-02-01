@@ -32,12 +32,35 @@ export default function SignUp() {
       return;
     }
 
+		attemptLogin();
+
     // Simulate sign-up API call
     console.log("Signing up with:", { username, email, password });
     setError("");
     alert(`Signed up as ${username}`);
   };
 
+
+	const attemptLogin = async () => {
+		const res = await fetch('http://localhost:5000/signUp', {
+			method: "PUT",
+			headers: {
+        'Content-Type': 'application/json',
+				},
+			body: JSON.stringify({ 
+				name: username,
+				email: email,
+				password: password,
+				createdClasses: []
+			})
+		});
+
+		/* Use to retrieve data
+			* document.getElementById("result").innerHTML = localStorage.getItem("userName"); 
+		*/
+		localStorage.setItem("userName", username);
+
+	}
   return (
     <React.Fragment>
       <Container maxWidth="xs">
