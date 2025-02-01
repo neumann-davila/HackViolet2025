@@ -4,7 +4,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Menu, MenuItem, Button, SvgIcon } from '@mui/material';
+import { Menu, MenuItem, Button, SvgIcon, TextField, Avatar } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import darkTheme from './theme';
 
@@ -24,82 +24,33 @@ function WebsiteIcon() {
   );
 }
 
-const menuItems = [
-  {name: 'Blog', link: '/blog'},
-  {name: 'Projects', link: '/projects'}
-];
+function stringToColor(string: string) {
+  let hash = 0;
+  let i;
 
-function DropDownMenu() {
-  const navigate = useNavigate();
-  const buttonRef = React.useRef<HTMLButtonElement | null>(null);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [buttonWidth, setButtonWidth] = React.useState<number>(0);
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
-  React.useEffect(() => {
-    if (buttonRef.current) {
-      setButtonWidth(buttonRef.current.offsetWidth); // Get the button's width
-    }
-  }, []);
+  let color = '#';
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+function stringAvatar(name: string) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
   };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleMenuItemClick = (link: string, name: string) => {
-    navigate(link);
-    handleClose();
-  };
-
-  return (
-    <div>
-      <Button
-        ref={buttonRef}
-        sx={{
-          borderRadius: '8px', // Rounded corners
-          paddingTop: .1,
-          paddingBottom: .1,
-          paddingLeft: 1.5,
-          paddingRight: 1.5,
-          border: `1px solid ${darkTheme.palette.divider}`,
-          color: '#fef9ec', // Text color
-          fontWeight: 'bold',
-          textTransform: 'none',
-        }}
-        onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
-      >
-        <Typography variant="h6">
-          Menu
-        </Typography>
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        slotProps={{
-          paper: {
-            style: {
-              width: buttonWidth,
-              backgroundColor: darkTheme.palette.background.paper
-            }
-          }
-        }}
-      >
-        {menuItems.map((item) => (
-          <MenuItem
-            key={item.name}
-            onClick={() => handleMenuItemClick(item.link, item.name)}
-          >
-            {item.name}
-          </MenuItem>
-        ))}
-      </Menu>
-    </div>
-  );
 }
 
 function ResponsiveAppBar() {
@@ -126,10 +77,24 @@ function ResponsiveAppBar() {
                 textDecoration: 'none',
               }}
             >
-              Remix with Material UI
+              Teacher Aid
             </Typography>
           </div>
-          <DropDownMenu></DropDownMenu>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <TextField 
+              id="code-entry" 
+              label="Enter Join Code" 
+              variant="standard"
+              sx={{
+                ml: 2,
+                mr: 4,
+                display: 'flex',
+                fontWeight: 500,
+                color: 'inherit',
+                textDecoration: 'none',
+              }}/>
+            <Avatar {...stringAvatar('Neumann Davila')} />
+          </div>
         </Toolbar>
       </Container>
     </AppBar>
