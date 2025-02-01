@@ -13,7 +13,7 @@ let thread;
 async function setup() {
   assistant = await openai.beta.assistants.create({
     name: "Teacher's Aid",
-    instructions:  "",
+    instructions:  "Your job is to analyze the current issues that are being provided to you and to alert the instructor if there seems to be a common issue among students.",
     model: "gpt-3.5-turbo",
   });
 
@@ -21,7 +21,6 @@ async function setup() {
 }
 
 setup();
-
 
 async function checkStatus(run) {
   if (run.status === 'completed') {
@@ -33,11 +32,13 @@ async function checkStatus(run) {
     }
     messages.data.reverse();
     return messages.data[0].content[0].text.value;
-  } else if (run.required_action && run.required_action.submit_tool_outputs && run.required_action.submit_tool_outputs.tool_calls) {
-    return "{{TOOL}}<<" + run.required_action.submit_tool_outputs.tool_calls[0].function.name + ">>";
-  } else {
-    console.log(run.status);
+  }  else {
+  console.log(run.status);
   }
+  // Use if utilizing Tools
+  //else if (run.required_action && run.required_action.submit_tool_outputs && run.required_action.submit_tool_outputs.tool_calls) {
+    //return "{{TOOL}}<<" + run.required_action.submit_tool_outputs.tool_calls[0].function.name + ">>";
+
 }
 
 async function submitRequest(message)  {
