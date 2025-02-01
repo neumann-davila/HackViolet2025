@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, TextField, Button, Typography, List, ListItem, ListItemText, Select, MenuItem } from '@mui/material';
+import { Box, Container, TextField, Button, Typography, List, ListItem, ListItemText, Select, MenuItem, Modal, Tooltip } from '@mui/material';
 
 const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> = ({ userType, username }) => {
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number>(0);
-  const [desks, setDesks] = useState<{ occupied: boolean; occupiedBy: string | null }[][]>([]);
+  const [desks, setDesks] = useState<{ occupied: boolean; occupiedBy: string | null; needsHelp: boolean }[][]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
@@ -29,7 +29,9 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
       if (desks[row][col].occupiedBy === username) {
         const newDesks = desks.map((r, rowIndex) =>
           r.map((desk, colIndex) =>
-            rowIndex === row && colIndex === col ? { ...desk, occupied: false, occupiedBy: null } : desk
+            rowIndex === row && colIndex === col
+              ? { ...desk, occupied: false, occupiedBy: null, needsHelp: false }
+              : desk
           )
         );
         setDesks(newDesks);
@@ -40,7 +42,9 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
         // If the desk is unoccupied, occupy it
         const newDesks = desks.map((r, rowIndex) =>
           r.map((desk, colIndex) =>
-            rowIndex === row && colIndex === col ? { ...desk, occupied: true, occupiedBy: username } : desk
+            rowIndex === row && colIndex === col
+              ? { ...desk, occupied: true, occupiedBy: username, needsHelp: false }
+              : desk
           )
         );
         setDesks(newDesks);
@@ -52,7 +56,25 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
       // Allow teachers to toggle any desk
       const newDesks = desks.map((r, rowIndex) =>
         r.map((desk, colIndex) =>
-          rowIndex === row && colIndex === col ? { ...desk, occupied: !desk.occupied, occupiedBy: null } : desk
+          rowIndex === row && colIndex === col
+            ? { ...desk, occupied: !desk.occupied, occupiedBy: null, needsHelp: false }
+            : desk
+        )
+      );
+      setDesks(newDesks);
+      if (socket) {
+        socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: newDesks }));
+      }
+    }
+  };
+
+  const toggleHelp = (row: number, col: number) => {
+    if (userType === 'student' && desks[row][col].occupiedBy === username) {
+      const newDesks = desks.map((r, rowIndex) =>
+        r.map((desk, colIndex) =>
+          rowIndex === row && colIndex === col
+            ? { ...desk, needsHelp: !desk.needsHelp }
+            : desk
         )
       );
       setDesks(newDesks);
@@ -63,7 +85,7 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
   };
 
   const generateGrid = () => {
-    setDesks(Array(rows).fill(Array(cols).fill({ occupied: false, occupiedBy: null })));
+    setDesks(Array(rows).fill(Array(cols).fill({ occupied: false, occupiedBy: null, needsHelp: false })));
   };
 
   const modifyGridSize = (operation: 'add' | 'remove', type: 'row' | 'col') => {
@@ -120,28 +142,71 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
       >
         {desks.map((row, rowIndex) =>
           row.map((desk, colIndex) => (
-            <button
+            <Tooltip
               key={`${rowIndex}-${colIndex}`}
-              style={{
-                width: '50px',
-                height: '50px',
-                backgroundColor: desk.occupied ? 'green' : 'red',
-                border: '1px solid #000',
-              }}
-              onClick={() => toggleDesk(rowIndex, colIndex)}
-              disabled={userType === 'student' && desk.occupied && desk.occupiedBy !== username}
+              title={
+                userType === 'teacher'
+                  ? desk.occupied
+                    ? `Occupied by: ${desk.occupiedBy}${desk.needsHelp ? ' (Needs Help)' : ''}`
+                    : 'Unoccupied'
+                  : desk.occupiedBy === username
+                  ? `You${desk.needsHelp ? ' (Need Help)' : ''}`
+                  : 'Desk'
+              }
+              arrow
             >
-              {desk.occupiedBy || 'Desk'}
-            </button>
+              <button
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  backgroundColor: desk.occupied ? (desk.needsHelp ? 'orange' : 'green') : 'red',
+                  border: '1px solid #000',
+                  cursor: 'pointer',
+                }}
+                onClick={() => toggleDesk(rowIndex, colIndex)}
+                disabled={userType === 'student' && desk.occupied && desk.occupiedBy !== username}
+              >
+                {desk.occupiedBy === username ? 'You' : 'Desk'}
+              </button>
+            </Tooltip>
           ))
         )}
       </div>
+
+      {/* Help toggle button for students */}
+      {userType === 'student' && (
+        <div>
+          <button
+            onClick={() => {
+              const desk = desks.flat().find((d) => d.occupiedBy === username);
+              if (desk) {
+                const [row, col] = findDeskPosition(desks, username);
+                toggleHelp(row, col);
+              }
+            }}
+          >
+            {desks.flat().find((d) => d.occupiedBy === username)?.needsHelp ? 'Cancel Help' : 'Request Help'}
+          </button>
+        </div>
+      )}
 
       {userType === 'student' && (
         <Typography variant="h5" sx={{ fontWeight: 500 }}>You cannot modify the desk grid as a student.</Typography>
       )}
     </div>
   );
+};
+
+// Helper function to find the position of a desk occupied by a specific student
+const findDeskPosition = (desks: { occupiedBy: string | null }[][], username: string): [number, number] => {
+  for (let row = 0; row < desks.length; row++) {
+    for (let col = 0; col < desks[row].length; col++) {
+      if (desks[row][col].occupiedBy === username) {
+        return [row, col];
+      }
+    }
+  }
+  return [-1, -1]; // Desk not found
 };
 
 export default function ChatApp() {
@@ -222,7 +287,7 @@ export default function ChatApp() {
   return (
     <Container disableGutters maxWidth="xl" sx={{ display: 'flex', mt: 16, justifyContent: 'space-between' }}>
       <Box sx={{ flex: 1, mr: 4 }}>
-        <DeskGrid userType={userType} />
+        <DeskGrid userType={userType} username={username} />
       </Box>
 
       <Box sx={{ flex: 1 }}>
