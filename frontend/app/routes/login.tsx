@@ -15,6 +15,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+	const [loginSuccess, setLoginSuccess] = useState(Boolean);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,11 +27,43 @@ export default function Login() {
       return;
     }
 
+		attemptLogin();
     // Simulate login API call
-    console.log("Logging in with:", { email, password });
-    setError("");
-    alert(`Logged in as ${email}`);
+		if(loginSuccess) {
+			console.log("Logging in with:", { email, password });
+			setError("");
+			alert(`Logged in as ${email}`);
+		} else {
+			setError("Login Failed")
+		}
+
   };
+
+
+	const attemptLogin = async () => {
+		const res = await fetch('http://localhost:5000/getUser', {
+			method: "POST",
+			headers: {
+        'Content-Type': 'application/json',
+				},
+			body: JSON.stringify({ email })
+		});
+
+		const answer = await res.json();
+
+		if(answer.password === password) {
+			setLoginSuccess(true);
+
+			/* Use to retrieve data
+			 * document.getElementById("result").innerHTML = localStorage.getItem("userName"); 
+			*/
+			localStorage.setItem("userName", answer.name);
+
+		} else {
+			setLoginSuccess(false);
+		}
+	}
+
 
   return (
     <React.Fragment>
