@@ -1,24 +1,40 @@
 import * as React from 'react';
 import type { MetaFunction } from '@remix-run/node';
-import { Link as RemixLink } from '@remix-run/react';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
+import { Link as RemixLink, useLocation } from '@remix-run/react';
+import { Typography, Box, Container, Tabs, Tab } from '@mui/material';
 import darkTheme from '~/src/theme';
-import { Box, Container } from '@mui/material';
-import profileImage from '../files/profile_photo.jpg'
 
-// https://remix.run/docs/en/main/route/meta
 export const meta: MetaFunction = () => [
   { title: 'Remix with Material UI' },
   { name: 'Fun Little Template', content: 'Welcome to my site!' },
 ];
 
-// https://remix.run/docs/en/main/file-conventions/routes#basic-routes
 export default function Index() {
+  const location = useLocation();
+
+  // Find active tab index based on route
+  const getTabIndex = () => {
+    switch (location.pathname) {
+      case '/about': return 1;
+      case '/contact': return 2;
+      default: return 0;
+    }
+  };
+
   return (
     <React.Fragment>
+      {/* Navigation Tabs */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
+        <Tabs value={getTabIndex()} centered>
+          <Tab label="Home" component={RemixLink} to="/" />
+          <Tab label="About" component={RemixLink} to="/student_view" />
+          <Tab label="Contact" component={RemixLink} to="/teacher_view" />
+        </Tabs>
+      </Box>
+
+      {/* Responsive Containers */}
       <Container disableGutters maxWidth='xl' sx={{
-        display: { xs: 'none', sm: 'none' ,md: 'grid'},
+        display: { xs: 'none', sm: 'none', md: 'grid' },
         mt: 16,
       }}>
         <Typography variant="h2" component="h1" sx={{
@@ -29,15 +45,11 @@ export default function Index() {
         }}>
           Hello World!
         </Typography>
-        <Typography variant='h4'>
-          Fun Template Stuff
-        </Typography>
+        <Typography variant='h4'>Fun Template Stuff</Typography>
       </Container>
 
-
-
       <Container disableGutters maxWidth='xl' sx={{
-        display: { xs: 'none', sm: 'grid' ,md: 'none', lg: 'none', xl: 'none' },
+        display: { xs: 'none', sm: 'grid', md: 'none', lg: 'none', xl: 'none' },
         mt: 12,
       }}>
         <Typography variant="h3" component="h1" sx={{
@@ -48,15 +60,11 @@ export default function Index() {
         }}>
           Hello World!
         </Typography>
-        <Typography variant='h4'>
-          Fun Template Stuff
-        </Typography>
+        <Typography variant='h4'>Fun Template Stuff</Typography>
       </Container>
 
-
-
       <Container disableGutters maxWidth='xl' sx={{
-        display: { xs: 'grid', sm: 'none' ,md: 'none', lg: 'none', xl: 'none' },
+        display: { xs: 'grid', sm: 'none', md: 'none', lg: 'none', xl: 'none' },
         mt: 8,
       }}>
         <Typography variant="h4" component="h1" sx={{
@@ -67,9 +75,7 @@ export default function Index() {
         }}>
           Hello World!
         </Typography>
-        <Typography variant='h4'>
-          Fun Template Stuff
-        </Typography>
+        <Typography variant='h4'>Fun Template Stuff</Typography>
       </Container>
     </React.Fragment>
   );
