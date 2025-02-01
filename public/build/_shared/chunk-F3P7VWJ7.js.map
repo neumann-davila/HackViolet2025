@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../app/src/ClientStyleContext.tsx"],
+  "sourcesContent": ["// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app\\\\src\\\\ClientStyleContext.tsx\"\n);\nimport.meta.hot.lastModified = \"1738426629405.421\";\n}\n// REMIX HMR END\n\nimport * as React from 'react';\r\n\r\nexport interface ClientStyleContextData {\r\n  reset: () => void;\r\n}\r\n\r\nexport default React.createContext<ClientStyleContextData>({\r\n  reset: () => {},\r\n});\r\n"],
+  "mappings": ";;;;;;;;;;;AAWA,YAAuB;AATvB,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;AASA,IAAO,6BAAc,oBAAsC;AAAA,EACzD,OAAO,MAAM;AAAA,EAAC;AAChB,CAAC;",
+  "names": []
+}

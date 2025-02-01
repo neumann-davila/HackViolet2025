@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { MetaFunction } from '@remix-run/node';
 import { Link as RemixLink, useLocation } from '@remix-run/react';
-import { Typography, Box, Container, Tabs, Tab } from '@mui/material';
+import { Typography, Box, Container, Tabs, Tab, TextField, Button} from '@mui/material';
 import darkTheme from '~/src/theme';
 
 export const meta: MetaFunction = () => [
@@ -41,11 +41,41 @@ export default function Index() {
           fontWeight: 500,
           pb: 3,
           mb: 4,
+          color: 'transparent',
+          backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
+          WebkitBackgroundClip: 'text',
           borderBottom: `2px solid ${darkTheme.palette.divider}`,
         }}>
-          Hello World!
+          Teacher Aid
         </Typography>
-        <Typography variant='h4'>Fun Template Stuff</Typography>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8'}}>
+          <Typography 
+          variant='h4' 
+          sx={{
+            mr: 4,
+            display: 'flex',
+            fontWeight: 500,
+            color: 'inherit',
+            textDecoration: 'none',
+          }}>
+            Enter Code:
+          </Typography>
+          <TextField id="code-entry" label="" variant="standard" />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center'}}>
+          <Typography 
+            variant='h4' 
+            sx={{
+              mr: 4,
+              display: 'flex',
+              fontWeight: 500,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}>
+            Are you a teacher? Make an account now!
+          </Typography>
+          <Button variant="contained">Sign Up</Button>
+        </div>
       </Container>
 
       <Container disableGutters maxWidth='xl' sx={{
@@ -56,11 +86,41 @@ export default function Index() {
           fontWeight: 500,
           pb: 2,
           mb: 3,
+          color: 'transparent',
+          backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
+          WebkitBackgroundClip: 'text',
           borderBottom: `2px solid ${darkTheme.palette.divider}`,
         }}>
-          Hello World!
+          Teacher Aid
         </Typography>
-        <Typography variant='h4'>Fun Template Stuff</Typography>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8'}}>
+        <Typography 
+          variant='h4' 
+          sx={{
+            mr: 4,
+            display: 'flex',
+            fontWeight: 500,
+            color: 'inherit',
+            textDecoration: 'none',
+          }}>
+            Enter Code:
+          </Typography>
+          <TextField id="code-entry" label="" variant="standard" />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center'}}>
+          <Typography 
+            variant='h4' 
+            sx={{
+              mr: 4,
+              display: 'flex',
+              fontWeight: 500,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}>
+            Are you a teacher? Make an account now!
+          </Typography>
+          <Button variant="contained">Sign Up</Button>
+        </div>
       </Container>
 
       <Container disableGutters maxWidth='xl' sx={{
@@ -71,11 +131,41 @@ export default function Index() {
           fontWeight: 500,
           pb: 1,
           mb: 2,
+          color: 'transparent',
+          backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
+          WebkitBackgroundClip: 'text',
           borderBottom: `2px solid ${darkTheme.palette.divider}`,
         }}>
-          Hello World!
+          Teacher Aid
         </Typography>
-        <Typography variant='h4'>Fun Template Stuff</Typography>
+        <div style={{ display: 'flex', alignItems: 'center'}}>
+          <Typography 
+          variant='h4' 
+          sx={{
+            mr: 4,
+            display: 'flex',
+            fontWeight: 500,
+            color: 'inherit',
+            textDecoration: 'none',
+          }}>
+            Enter Code:
+          </Typography>
+          <TextField id="code-entry" label="" variant="standard" />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center'}}>
+          <Typography 
+          variant='h4' 
+          sx={{
+            mr: 4,
+            display: 'flex',
+            fontWeight: 500,
+            color: 'inherit',
+            textDecoration: 'none',
+          }}>
+            Are you a teacher? Make an account now!
+          </Typography>
+          <Button variant="contained">Sign Up</Button>
+        </div>
       </Container>
     </React.Fragment>
   );
