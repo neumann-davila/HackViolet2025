@@ -53,11 +53,16 @@ export default function Login() {
 
 		if(answer.password === password) {
 			setLoginSuccess(true);
+
+			/* Use to retrieve data
+			 *document.getElementById("result").innerHTML = localStorage.getItem("userName"); 
+				*/
+			localStorage.setItem("userName", answer.name);
+
 		} else {
 			setLoginSuccess(false);
 		}
 	}
-
 
 
   return (
