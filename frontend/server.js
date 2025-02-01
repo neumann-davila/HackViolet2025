@@ -2,8 +2,12 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 3000 });
 
 const users = {};
+let deskState = []; // Store the desk grid state globally
 
 wss.on('connection', (ws) => {
+  // Send the current desk grid state to the new client upon connection
+  ws.send(JSON.stringify({ type: 'DESK_STATE', payload: deskState }));
+
   ws.on('message', (message) => {
     const data = JSON.parse(message);
 
@@ -22,6 +26,12 @@ wss.on('connection', (ws) => {
         recipientSocket.send(JSON.stringify({ type: 'PRIVATE_MESSAGE', payload: data.payload }));
       }
     }
+
+    // Handle desk state updates from clients
+    if (data.type === 'DESK_STATE_UPDATE') {
+      deskState = data.payload; // Update the server's desk state
+      broadcastDeskState(); // Broadcast the new desk state to all clients
+    }
   });
 
   ws.on('close', () => {
@@ -34,6 +44,11 @@ wss.on('connection', (ws) => {
     }
   });
 });
+
+// Broadcast the updated desk state to all clients
+function broadcastDeskState() {
+  broadcast({ type: 'DESK_STATE', payload: deskState });
+}
 
 function broadcast(data) {
   wss.clients.forEach((client) => {
