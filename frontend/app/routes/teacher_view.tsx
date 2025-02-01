@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, TextField, Button, Typography, List, ListItem, ListItemText, Select, MenuItem } from '@mui/material';
 
-const DeskGrid: React.FC<{ userType: 'student' | 'teacher' }> = ({ userType }) => {
+const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> = ({ userType, username }) => {
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number>(0);
-  const [desks, setDesks] = useState<boolean[][]>([]);
+  const [desks, setDesks] = useState<{ occupied: boolean; occupiedBy: string | null }[][]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
@@ -24,21 +24,46 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher' }> = ({ userType }) =
   }, []);
 
   const toggleDesk = (row: number, col: number) => {
-    // Allow desk toggling for both students and teachers
-    const newDesks = desks.map((r, rowIndex) =>
-      r.map((desk, colIndex) =>
-        rowIndex === row && colIndex === col ? !desk : desk
-      )
-    );
-    setDesks(newDesks);
-
-    if (socket) {
-      socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: newDesks }));
+    if (userType === 'student') {
+      // If the desk is already occupied by the student, unoccupy it
+      if (desks[row][col].occupiedBy === username) {
+        const newDesks = desks.map((r, rowIndex) =>
+          r.map((desk, colIndex) =>
+            rowIndex === row && colIndex === col ? { ...desk, occupied: false, occupiedBy: null } : desk
+          )
+        );
+        setDesks(newDesks);
+        if (socket) {
+          socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: newDesks }));
+        }
+      } else if (!desks[row][col].occupied) {
+        // If the desk is unoccupied, occupy it
+        const newDesks = desks.map((r, rowIndex) =>
+          r.map((desk, colIndex) =>
+            rowIndex === row && colIndex === col ? { ...desk, occupied: true, occupiedBy: username } : desk
+          )
+        );
+        setDesks(newDesks);
+        if (socket) {
+          socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: newDesks }));
+        }
+      }
+    } else if (userType === 'teacher') {
+      // Allow teachers to toggle any desk
+      const newDesks = desks.map((r, rowIndex) =>
+        r.map((desk, colIndex) =>
+          rowIndex === row && colIndex === col ? { ...desk, occupied: !desk.occupied, occupiedBy: null } : desk
+        )
+      );
+      setDesks(newDesks);
+      if (socket) {
+        socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: newDesks }));
+      }
     }
   };
 
   const generateGrid = () => {
-    setDesks(Array(rows).fill(Array(cols).fill(false)));
+    setDesks(Array(rows).fill(Array(cols).fill({ occupied: false, occupiedBy: null })));
   };
 
   const modifyGridSize = (operation: 'add' | 'remove', type: 'row' | 'col') => {
@@ -100,13 +125,13 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher' }> = ({ userType }) =
               style={{
                 width: '50px',
                 height: '50px',
-                backgroundColor: desk ? 'green' : 'red',
+                backgroundColor: desk.occupied ? 'green' : 'red',
                 border: '1px solid #000',
               }}
               onClick={() => toggleDesk(rowIndex, colIndex)}
-              disabled={userType === 'student' && !desk} // Disable toggle for student when desk is unoccupied
+              disabled={userType === 'student' && desk.occupied && desk.occupiedBy !== username}
             >
-              Desk
+              {desk.occupiedBy || 'Desk'}
             </button>
           ))
         )}
