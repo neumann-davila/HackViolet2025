@@ -60,54 +60,6 @@ async function submitRequest(message)  {
   return checkStatus(run);
 }
 
-async function submit_tool_outputs(input) {
-  
-  const runs = await openai.beta.threads.runs.list(
-    thread.id,
-  );
-
-  let run = await openai.beta.threads.runs.retrieve(
-    thread.id,
-    runs.data[0].id
-  )
-
-  const toolOutputs = run.required_action.submit_tool_outputs.tool_calls.map(
-    (tool) => {  
-      console.log(tool.function.name);
-      switch (tool.function.name) {
-        case "RollStrength":
-        case "RollDexterity":
-        case "RollIntelligence":
-        case "RollWisdom":
-        case "RollCharisma":
-        case "RollConstitution":
-          console.log("assistant > " + tool.function.name);
-          return {
-            tool_call_id: tool.id,
-            output: input
-          }
-          break;
-        default:
-          console.log("assistant > Invalid Tool");
-          break;
-      }
-    });
-
-  if (toolOutputs.length > 0) {
-    run = await openai.beta.threads.runs.submitToolOutputsAndPoll(
-      thread.id,
-      run.id,
-      { tool_outputs: toolOutputs },
-    );
-    console.log("Tool outputs submitted successfully.");
-  } else {
-    console.log("No tool outputs to submit.");
-  } 
-
-  return checkStatus(run);
-}
-
 module.exports = {
-  submitRequest,
-  submit_tool_outputs
+  submitRequest
 }
