@@ -19,14 +19,17 @@ export default function ChatApp() {
   const [username, setUsername] = React.useState('User');
   const ws = React.useRef<WebSocket | null>(null);
 
-  // Connect to WebSocket server
   React.useEffect(() => {
-    ws.current = new WebSocket('ws://localhost:3000'); // Replace with your WebSocket server URL
+    ws.current = new WebSocket('ws://localhost:3000'); // Connect to WebSocket server
 
     ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'NEW_MESSAGE') {
-        setMessages((prevMessages) => [...prevMessages, data.payload]);
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'NEW_MESSAGE') {
+          setMessages((prevMessages) => [...prevMessages, data.payload]);
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error);
       }
     };
 
@@ -39,9 +42,8 @@ export default function ChatApp() {
     };
   }, []);
 
-  // Handle new message input
   const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
+    if (newMessage.trim() !== '' && ws.current) {
       const messagePayload = {
         type: 'NEW_MESSAGE',
         payload: {
@@ -50,19 +52,8 @@ export default function ChatApp() {
         },
       };
 
-      // Send message to WebSocket server
-      if (ws.current) {
-        ws.current.send(JSON.stringify(messagePayload));
-      }
-
-      // Update the local chat with the new message
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { username, message: newMessage },
-      ]);
-
-      // Clear input field
-      setNewMessage('');
+      ws.current.send(JSON.stringify(messagePayload)); // Send message to server
+      setNewMessage(''); // Clear input field
     }
   };
 
@@ -100,7 +91,7 @@ export default function ChatApp() {
         Send
       </Button>
 
-      {/* Username Input (optional) */}
+      {/* Username Input */}
       <TextField
         fullWidth
         label="Enter your username"
@@ -112,3 +103,5 @@ export default function ChatApp() {
     </Container>
   );
 }
+
+
