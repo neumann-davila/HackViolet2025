@@ -40,7 +40,7 @@ const StudentClassroom = () => {
       width: '100%',
       justifyContent: 'center'
     }}>
-      <ClassroomLayout classroom={ classroom } />
+      <ClassroomLayout key={`${classroom.rows}-${classroom.columns}`} classroom={ classroom } />
     </div>);
 }
 

@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Container, TextField, Button, Typography, List, ListItem, ListItemText, Select, MenuItem, Modal, Tooltip } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import { Box, Container, TextField, Button, Typography, List, ListItem, ListItemText, Select, MenuItem, Tooltip, Grid } from '@mui/material';
 
-const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> = ({ userType, username }) => {
+interface Desk {
+  occupied: boolean;
+  occupiedBy: string | null;
+  needsHelp: boolean;
+}
+
+interface DeskGridProps {
+  userType: 'student' | 'teacher';
+  username: string;
+}
+
+const DeskGrid: React.FC<DeskGridProps> = ({ userType, username }) => {
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number>(0);
-  const [desks, setDesks] = useState<{ occupied: boolean; occupiedBy: string | null; needsHelp: boolean }[][]>([]);
+  const [desks, setDesks] = useState<Desk[][]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
@@ -102,42 +113,62 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
     <div>
       {userType === 'teacher' && (
         <>
-          <div>
-            <label>
-              Rows:
-              <input
+          <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid item>
+              <TextField
                 type="number"
+                label="Rows"
                 value={rows}
                 onChange={(e) => setRows(parseInt(e.target.value))}
               />
-            </label>
-            <label>
-              Columns:
-              <input
+            </Grid>
+            <Grid item>
+              <TextField
                 type="number"
+                label="Columns"
                 value={cols}
                 onChange={(e) => setCols(parseInt(e.target.value))}
               />
-            </label>
-            <button onClick={generateGrid}>Generate Grid</button>
-          </div>
+            </Grid>
+            <Grid item>
+              <Button variant="contained" onClick={generateGrid}>
+                Generate Grid
+              </Button>
+            </Grid>
+          </Grid>
 
-          <div>
-            <button onClick={() => modifyGridSize('add', 'row')}>Add Row</button>
-            <button onClick={() => modifyGridSize('add', 'col')}>Add Column</button>
-            <button onClick={() => modifyGridSize('remove', 'row')}>Remove Row</button>
-            <button onClick={() => modifyGridSize('remove', 'col')}>Remove Column</button>
-          </div>
+          <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid item>
+              <Button variant="contained" onClick={() => modifyGridSize('add', 'row')}>
+                Add Row
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button variant="contained" onClick={() => modifyGridSize('add', 'col')}>
+                Add Column
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button variant="contained" onClick={() => modifyGridSize('remove', 'row')}>
+                Remove Row
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button variant="contained" onClick={() => modifyGridSize('remove', 'col')}>
+                Remove Column
+              </Button>
+            </Grid>
+          </Grid>
         </>
       )}
-      
+
       {/* Display the grid for both teachers and students */}
-      <div
-        style={{
+      <Box
+        sx={{
           display: 'grid',
           gridTemplateColumns: `repeat(${cols}, 50px)`,
           gridGap: '5px',
-          marginBottom: '20px',
+          mb: 2,
         }}
       >
         {desks.map((row, rowIndex) =>
@@ -155,28 +186,33 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
               }
               arrow
             >
-              <button
-                style={{
+              <Button
+                sx={{
                   width: '50px',
                   height: '50px',
                   backgroundColor: desk.occupied ? (desk.needsHelp ? 'orange' : 'green') : 'red',
                   border: '1px solid #000',
                   cursor: 'pointer',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: desk.occupied ? (desk.needsHelp ? 'darkorange' : 'darkgreen') : 'darkred',
+                  },
                 }}
                 onClick={() => toggleDesk(rowIndex, colIndex)}
                 disabled={userType === 'student' && desk.occupied && desk.occupiedBy !== username}
               >
                 {desk.occupiedBy === username ? 'You' : 'Desk'}
-              </button>
+              </Button>
             </Tooltip>
           ))
         )}
-      </div>
+      </Box>
 
       {/* Help toggle button for students */}
       {userType === 'student' && (
-        <div>
-          <button
+        <Box sx={{ mb: 2 }}>
+          <Button
+            variant="contained"
             onClick={() => {
               const desk = desks.flat().find((d) => d.occupiedBy === username);
               if (desk) {
@@ -186,8 +222,8 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
             }}
           >
             {desks.flat().find((d) => d.occupiedBy === username)?.needsHelp ? 'Cancel Help' : 'Request Help'}
-          </button>
-        </div>
+          </Button>
+        </Box>
       )}
 
       {userType === 'student' && (
@@ -198,7 +234,7 @@ const DeskGrid: React.FC<{ userType: 'student' | 'teacher'; username: string }> 
 };
 
 // Helper function to find the position of a desk occupied by a specific student
-const findDeskPosition = (desks: { occupiedBy: string | null }[][], username: string): [number, number] => {
+const findDeskPosition = (desks: Desk[][], username: string): [number, number] => {
   for (let row = 0; row < desks.length; row++) {
     for (let col = 0; col < desks[row].length; col++) {
       if (desks[row][col].occupiedBy === username) {
@@ -209,17 +245,22 @@ const findDeskPosition = (desks: { occupiedBy: string | null }[][], username: st
   return [-1, -1]; // Desk not found
 };
 
-export default function ChatApp() {
-  const [publicMessages, setPublicMessages] = React.useState<{ username: string; message: string }[]>([]);
-  const [privateMessages, setPrivateMessages] = React.useState<{ [key: string]: { username: string; message: string }[] }>({});
-  const [newMessage, setNewMessage] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [userType, setUserType] = React.useState<'student' | 'teacher'>('student');
-  const [recipient, setRecipient] = React.useState('');
-  const [userList, setUserList] = React.useState<string[]>([]);
-  const ws = React.useRef<WebSocket | null>(null);
+interface Message {
+  username: string;
+  message: string;
+}
 
-  React.useEffect(() => {
+const ChatApp: React.FC = () => {
+  const [publicMessages, setPublicMessages] = useState<Message[]>([]);
+  const [privateMessages, setPrivateMessages] = useState<{ [key: string]: Message[] }>({});
+  const [newMessage, setNewMessage] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
+  const [userType, setUserType] = useState<'student' | 'teacher'>('student');
+  const [recipient, setRecipient] = useState<string>('');
+  const [userList, setUserList] = useState<string[]>([]);
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
     ws.current = new WebSocket('ws://localhost:3000');
 
     ws.current.onmessage = (event) => {
@@ -332,16 +373,20 @@ export default function ChatApp() {
           </Select>
         )}
 
-        <Typography variant="h5" sx={{ fontWeight: 500, mt: 3 }}>Public Chat</Typography>
-        <Box sx={{ maxHeight: '200px', overflowY: 'auto', mb: 3, border: '1px solid gray', padding: 2 }}>
-          <List>
-            {publicMessages.map((msg, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={`${msg.username}:`} secondary={msg.message} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+{userType === 'teacher' && (
+  <>
+    <Typography variant="h5" sx={{ fontWeight: 500, mt: 3 }}>Public Chat</Typography>
+    <Box sx={{ maxHeight: '200px', overflowY: 'auto', mb: 3, border: '1px solid gray', padding: 2 }}>
+      <List>
+        {publicMessages.map((msg, index) => (
+          <ListItem key={index}>
+            <ListItemText primary={`${msg.username}:`} secondary={msg.message} />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  </>
+)}
 
         {userType === 'teacher' && recipient && (
           <>
@@ -350,7 +395,7 @@ export default function ChatApp() {
               <List>
                 {(privateMessages[recipient] || []).map((msg, index) => (
                   <ListItem key={index}>
-                    <ListItemText primary={`${msg.username}:`} secondary={msg.message} />
+                    <ListItemText primary={`${msg.username}: ${msg.message}`} />
                   </ListItem>
                 ))}
               </List>
@@ -372,4 +417,6 @@ export default function ChatApp() {
       </Box>
     </Container>
   );
-}
+};
+
+export default ChatApp;
