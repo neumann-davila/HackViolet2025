@@ -30,9 +30,7 @@ export default function Login() {
 		attemptLogin();
     // Simulate login API call
 		if(loginSuccess) {
-			//console.log("Logging in with:", { email, password });
-			//setError("");
-			//alert(`Logged in as ${email}`);
+			console.log("Logging in with:", { email, password });
 			navigate('/dashboard')
 		} else {
 			setError("Login Failed")
