@@ -56,7 +56,14 @@ app.post('/getUser', async (req, res) => {
 })
 
 app.post('/newClassroom', async (req, res) => {
-
+  try {
+    console.log(req.body);
+    await MongoDBOrchestrator.newClassroom(req.body);
+  } catch (error) {
+    console.error("Error with MongoDB Atlas: newClassroom");
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong with MongoDB Atlas: newClassroom' });
+  }
 });
 
 app.post('/classroomData', async (req, res) => {
