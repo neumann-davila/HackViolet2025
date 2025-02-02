@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');  
 
 const AIOrchestrator = require('./services/AIOrchestrator.js');
-const MongoDBOrchestrator = require('./services/MongoDBManager.js')
+const MongoDBManager = require('./services/MongoDBManager.js')
 
 const app = express();
 app.use(bodyParser.json());
@@ -35,7 +35,7 @@ app.post('/', async (req, res) => {
 app.put('/signUp', async (req, res) => {
   try {
     console.log(req.body);
-    await MongoDBOrchestrator.newUser(req.body);
+    await MongoDBManager.newUser(req.body);
   } catch (error) {
     console.error("Error with MongoDB Atlas");
     console.error(error);
@@ -46,7 +46,7 @@ app.put('/signUp', async (req, res) => {
 app.post('/getUser', async (req, res) => {
   const { email } = req.body;
   try {
-    userData = await MongoDBOrchestrator.getUser(email);
+    userData = await MongoDBManager.getUser(email);
 
     res.status(200).json(userData);
   } catch (error) {
@@ -58,7 +58,7 @@ app.post('/getUser', async (req, res) => {
 app.put('/newClassroom', async (req, res) => {
   try {
     console.log(req.body);
-    await MongoDBOrchestrator.newClassroom(req.body);
+    await MongoDBManager.newClassroom(req.body);
   } catch (error) {
     console.error("Error with MongoDB Atlas: newClassroom");
     console.error(error);
@@ -70,7 +70,7 @@ app.post('/classroomData', async (req, res) => {
   // put like a name thing, name sent in req, send it to mongoDB function (getClassroom) using .find and filter similar structure to user one. return back to res
   const { name } = req.body;
   try {
-    classroomData = await MongoDBOrchestrator.getClassroom(name);
+    classroomData = await MongoDBManager.getClassroom(name);
     
     res.status(200).json(classroomData);
   } catch (error) {

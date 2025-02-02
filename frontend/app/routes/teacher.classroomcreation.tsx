@@ -1,7 +1,8 @@
-import { Box, Button, TextField, FormGroup, FormControlLabel, Switch, Container } from '@mui/material';
+import { Box, Button, TextField, FormGroup, FormControlLabel, Switch, Container, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Link as RemixLink} from '@remix-run/react';
 import darkTheme from '~/src/theme';
+import { useNavigate } from '@remix-run/react'; 
 
 
 const DeskGrid: React.FC = () => {
@@ -11,6 +12,9 @@ const DeskGrid: React.FC = () => {
   const [toggleRow, setToggleRow] = useState(false);
   const [toggleCol, setToggleCol] = useState(false);
   const [roomGenerated, setGenerated] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [classroomName, setClassroomName] = useState(""); 
+  const navigate = useNavigate();
 
   const toggleDesk = (row: number, col: number) => {
     const newDesks = [...desks];
@@ -39,19 +43,30 @@ const DeskGrid: React.FC = () => {
   };
  
   const confirm = async () => {
+    if (!classroomName) {
+      alert("Please enter a classroom name."); // Validate classroom name
+      return;
+    }
     const res = await fetch('http://localhost:5000/newClassroom', {
 			method: "PUT",
 			headers: {
         'Content-Type': 'application/json',
 				},
 			body: JSON.stringify({ 
-        name: "Default",
+        name: classroomName,
         rows: rows,
         columns: cols,
         desks: desks
       })
 		});
-
+    if (res.ok) {
+      alert("Classroom created successfully!");
+      setOpenDialog(false); // Close the dialog
+      console.log(`Navigating to /teacher/classroom/${classroomName}`);
+      navigate(`/teacher/classroom/${classroomName}`);
+    } else {
+      alert("Failed to create classroom.");
+    }
 
   };
 
@@ -92,9 +107,7 @@ const DeskGrid: React.FC = () => {
                 <FormControlLabel control={<Switch checked={toggleCol} onChange={() => setToggleCol(!toggleCol)} />} label='Toggle Column' />
                 <FormControlLabel control={<Switch checked={toggleRow} onChange={() => setToggleRow(!toggleRow)} />} label='Toggle Row' />
               </FormGroup>
-              <RemixLink to="/teacherClassroom" style={{ textDecoration: 'none' }}>
-                <Button variant='contained' disabled={!roomGenerated}>Confirm</Button>
-              </RemixLink>
+                <Button variant='contained' disabled={!roomGenerated} onClick={() => setOpenDialog(true)}>Confirm</Button>
             </Box>
           </Box>
         </Container>
@@ -124,6 +137,26 @@ const DeskGrid: React.FC = () => {
         
         </Box>
       </Container>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Enter Classroom Name</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Classroom Name"
+            type="text"
+            fullWidth
+            value={classroomName}
+            onChange={(e) => setClassroomName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <RemixLink to={`/teacher/classroom/${classroomName}`} style={{ textDecoration: "none" }}>
+          <Button onClick={confirm}>Confirm</Button>
+          </RemixLink>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 };
