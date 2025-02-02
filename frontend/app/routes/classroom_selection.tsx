@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, FormGroup, Switch } from '@mui/material';
+import { Box, Button, TextField, FormGroup, FormControlLabel, Switch, Container } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Link as RemixLink} from '@remix-run/react';
 
@@ -55,90 +55,75 @@ const DeskGrid: React.FC = () => {
   };
 
   return (
-    <div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center'
-        }}>
-        <label>
-          Rows:
-          <input
-            type="number"
-            value={rows}
-            onChange={(e) => setRows(parseInt(e.target.value))}
-          />
-        </label>
-        <label>
-          Columns:
-          <input
-            type="number"
-            value={cols}
-            onChange={(e) => setCols(parseInt(e.target.value))}
-          />
-        </label>
-        <Button variant='outlined' onClick={() => {
-          setDesks(Array.from({ length: rows }, () => Array(cols).fill(true)));
-          setGenerated(true);
-          }}>Generate Classroom</Button>
-        <FormGroup>
-          <FormControlLabel control={<Switch />} label='Toggle Column' onChange={() => {
-            if(toggleCol){
-              setToggleCol(false);
-            } else {
-              setToggleCol(true);
-            }
-          }}/>
-          <FormControlLabel control={<Switch/>} label='Toggle Row' onChange={() => {
-            if(toggleRow){
-              setToggleRow(false);
-            } else {
-              setToggleRow(true);
-            }
-          }}/>
-        </FormGroup>
-      </div>
-      <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        paddingTop: 30
-      }}>
-        <div
-        style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${cols}, 50px)`,
-              gridGap: '5px',
-            }}
+    <React.Fragment>
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Container maxWidth="md">
+          <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
+            <Box display="flex" justifyContent="space-between" width="100%" gap={2} alignItems="center">
+              <Box display="flex" gap={2}>
+                <TextField
+                  label="Rows"
+                  type="number"
+                  value={rows}
+                  onChange={(e) => setRows(parseInt(e.target.value))}
+                  size="small"
+                />
+                <TextField
+                  label="Columns"
+                  type="number"
+                  value={cols}
+                  onChange={(e) => setCols(parseInt(e.target.value))}
+                  size="small"
+                />
+              </Box>
+              <Button
+                variant='outlined'
+                onClick={() => {
+                  setDesks(Array.from({ length: rows }, () => Array(cols).fill(true)));
+                  setGenerated(true);
+                }}
+              >
+                Generate Classroom
+              </Button>
+            </Box>
+            <Box display="flex" justifyContent="space-between" width="100%">
+              <FormGroup row>
+                <FormControlLabel control={<Switch checked={toggleCol} onChange={() => setToggleCol(!toggleCol)} />} label='Toggle Column' />
+                <FormControlLabel control={<Switch checked={toggleRow} onChange={() => setToggleRow(!toggleRow)} />} label='Toggle Row' />
+              </FormGroup>
+              <RemixLink to="/teacherClassroom" style={{ textDecoration: 'none' }}>
+                <Button variant='contained' disabled={!roomGenerated}>Confirm</Button>
+              </RemixLink>
+            </Box>
+          </Box>
+        </Container>
+        <Box display="flex" justifyContent="center" pt={3}>
+          <Box
+            display="grid"
+            sx={{ gridTemplateColumns: `repeat(${cols}, 50px)`, gap: 1 }}
           >
             {desks.map((row, rowIndex) =>
               row.map((desk, colIndex) => (
-                <button
+                <Button
                   key={`${rowIndex}-${colIndex}`}
-                  style={{
-                    width: '50px',
-                    height: '50px',
+                  sx={{
+                    width: 50,
+                    height: 50,
                     backgroundColor: desk ? 'green' : 'black',
                     border: '1px solid #000',
+                    minWidth: 0,
                   }}
                   onClick={() => toggleDesk(rowIndex, colIndex)}
                 />
               ))
             )}
-          </div>
-        </div>
-        <div
-        style={{
-          display: 'flex',
-          justifyContent: 'right',
-        }}>
-        <RemixLink to="/teacherClassroom" style={{ textDecoration: "none" }}>
-          <Button variant='contained' disabled={!roomGenerated}>
-          {/* onClick={confirm} */}
-            Confirm</Button>
-        </RemixLink>
-        </div>
-      </div>
+          </Box>
+        </Box>
+        <Box display="flex" justifyContent="flex-end" mt={2}>
+        
+        </Box>
+      </Container>
+    </React.Fragment>
   );
 };
 
