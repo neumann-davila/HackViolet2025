@@ -1,5 +1,7 @@
 import { Button, FormControlLabel, FormGroup, Switch } from '@mui/material';
 import React, { useState, useEffect } from 'react';
+import { Link as RemixLink} from '@remix-run/react';
+
 
 const DeskGrid: React.FC = () => {
   const [rows, setRows] = useState<number>(1);
@@ -130,7 +132,11 @@ const DeskGrid: React.FC = () => {
           display: 'flex',
           justifyContent: 'right',
         }}>
-          <Button variant='contained' disabled={!roomGenerated} onClick={confirm}>Confirm</Button>
+        <RemixLink to="/teacherClassroom" style={{ textDecoration: "none" }}>
+          <Button variant='contained' disabled={!roomGenerated}>
+          {/* onClick={confirm} */}
+            Confirm</Button>
+        </RemixLink>
         </div>
       </div>
   );

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RemixLink} from '@remix-run/react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -25,6 +26,21 @@ function WebsiteIcon() {
 }
 
 function ResponsiveAppBar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const status = localStorage.getItem("status");
+    const name = localStorage.getItem("userName");
+
+    if (status === "Teacher" && name)
+    {
+      setIsLoggedIn(true);
+      setUserName(name);
+    }
+  }, []);
+  
+  
   return (
     <AppBar position="static" color="transparent" sx={{
       borderBottom: `1px solid ${darkTheme.palette.divider}`,
@@ -51,7 +67,23 @@ function ResponsiveAppBar() {
               Teacher Aid
             </Typography>
           </div>
+          {isLoggedIn ?  (
           <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Avatar sx={{bgcolor: 'primary.main', mr: 2}}>
+              {userName.charAt(0).toUpperCase()}
+            </Avatar>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 500,
+                color: 'inherit',
+              }}
+              >
+                {userName}
+              </Typography>
+              </div>
+          ) : (
+            <div style={{display: 'flex', alignItems: 'center'}}>
           <Typography
               variant="h5"
               noWrap
@@ -71,6 +103,7 @@ function ResponsiveAppBar() {
               <Button variant="contained">Login</Button>
             </RemixLink>
           </div>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
