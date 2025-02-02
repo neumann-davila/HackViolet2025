@@ -81,18 +81,22 @@ function ResponsiveAppBar() {
             </Typography>
           </div>
           <div style={{ display: 'flex', alignItems: 'center'}}>
-            <TextField 
-              id="code-entry" 
-              label="Enter Join Code" 
-              variant="standard"
+          <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href="/"
               sx={{
-                ml: 2,
-                mr: 4,
+                mr: 2,
                 display: 'flex',
                 fontWeight: 500,
                 color: 'inherit',
                 textDecoration: 'none',
-              }}/>
+              }}
+            >
+              Are you a teacher?
+            </Typography>
+            <Button variant="contained" sx={{mr: 4}}>Login</Button>
             <Avatar {...stringAvatar('Neumann Davila')} 
             sx={{ cursor: "pointer" }}
             />

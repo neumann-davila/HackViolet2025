@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import type { MetaFunction } from '@remix-run/node';
 import { Link as RemixLink, useLocation } from '@remix-run/react';
-import { Typography, Box, Container, Tabs, Tab, TextField, Button, Stack} from '@mui/material';
+import { Typography, Box, Container, Tabs, Tab, TextField, Button, Stack, InputAdornment, IconButton} from '@mui/material';
 import darkTheme from '~/src/theme';
+import LoginIcon from '@mui/icons-material/Login';
 
 export const meta: MetaFunction = () => [
   { title: 'Teacher Aid' },
@@ -35,67 +36,56 @@ export default function Index() {
 
       {/* Responsive Containers */}
       <Container disableGutters maxWidth='xl' sx={{
-        display: { xs: 'none', sm: 'none', md: 'grid' },
-        mt: 16,
+        display: { xs: 'none', sm: 'none', md: 'grid'},
+        mt: 12,
       }}>
-        <Typography variant="h2" component="h1" sx={{
-          fontWeight: 500,
-          pb: 3,
-          mb: 4,
-          color: 'transparent',
-          backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-          WebkitBackgroundClip: 'text',
-          borderBottom: `2px solid ${darkTheme.palette.divider}`,
-        }}>
-          Teacher Aid
-        </Typography>
-        <Stack spacing={2}>
-          <div style={{ display: 'flex', alignItems: 'center'}}>
-            <Typography 
-            variant='h4' 
-            sx={{
-              mr: 4,
-              display: 'flex',
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%'}}>
+          <div style={{ display: 'flex', flexDirection: 'column', width: '50%'}}>
+            <Typography variant="h2" component="h1" sx={{
               fontWeight: 500,
-              color: 'inherit',
-              textDecoration: 'none',
+              pb: 3,
+              mb: 4,
+              borderBottom: `2px solid ${darkTheme.palette.divider}`,
+              color: 'transparent',
+              backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
+              WebkitBackgroundClip: 'text',
             }}>
-              Enter Code:
+              Teacher Aid
             </Typography>
-            <TextField id="code-entry" label="" variant="standard" />
+            <TextField id="code-entry" label="Enter Classroom Join Code" variant="outlined"
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end" sx={{ marginRight: 1 }}>
+                    <IconButton edge="end" color="primary">
+                      <LoginIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}/>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center'}}>
-            <Typography 
-              variant='h4' 
-              sx={{
-                mr: 4,
-                display: 'flex',
-                fontWeight: 500,
-                color: 'inherit',
-                textDecoration: 'none',
-              }}>
-              Are you a teacher? Make an account now!
-            </Typography>
-            <Button variant="contained">Sign Up</Button>
-          </div>
-        </Stack>
+        </div>
       </Container>
 
       <Container disableGutters maxWidth='xl' sx={{
         display: { xs: 'none', sm: 'grid', md: 'none', lg: 'none', xl: 'none' },
         mt: 12,
+        alignItems: 'center',
       }}>
-        <Typography variant="h3" component="h1" sx={{
-          fontWeight: 500,
-          pb: 2,
-          mb: 3,
-          color: 'transparent',
-          backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-          WebkitBackgroundClip: 'text',
-          borderBottom: `2px solid ${darkTheme.palette.divider}`,
-        }}>
-          Teacher Aid
-        </Typography>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Typography variant="h3" component="h1" sx={{
+            fontWeight: 500,
+            pb: 2,
+            mb: 3,
+            color: 'transparent',
+            backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
+            WebkitBackgroundClip: 'text',
+            borderBottom: `2px solid ${darkTheme.palette.divider}`,
+          }}>
+            Teacher Aid
+          </Typography>
+        </div>
         <Stack spacing={2}>
           <div style={{ display: 'flex', alignItems: 'center'}}>
             <Typography 
@@ -131,18 +121,21 @@ export default function Index() {
       <Container disableGutters maxWidth='xl' sx={{
         display: { xs: 'grid', sm: 'none', md: 'none', lg: 'none', xl: 'none' },
         mt: 8,
+        alignItems: 'center',
       }}>
-        <Typography variant="h4" component="h1" sx={{
-          fontWeight: 500,
-          pb: 1,
-          mb: 2,
-          color: 'transparent',
-          backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-          WebkitBackgroundClip: 'text',
-          borderBottom: `2px solid ${darkTheme.palette.divider}`,
-        }}>
-          Teacher Aid
-        </Typography>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Typography variant="h4" component="h1" sx={{
+            fontWeight: 500,
+            pb: 1,
+            mb: 2,
+            color: 'transparent',
+            backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
+            WebkitBackgroundClip: 'text',
+            borderBottom: `2px solid ${darkTheme.palette.divider}`,
+          }}>
+            Teacher Aid
+          </Typography>
+        </div>
         <Stack spacing={2}>
           <div style={{ display: 'flex', alignItems: 'center'}}>
             <Typography 
