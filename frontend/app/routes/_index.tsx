@@ -7,7 +7,7 @@ import darkTheme from '~/src/theme';
 import LoginIcon from '@mui/icons-material/Login';
 
 export const meta: MetaFunction = () => [
-  { title: 'Teacher Aid' },
+  { title: 'TeacherAid' },
   { name: 'A classroom tool to help bridge the gap between teacher and student', content: 'Welcome to Teacher Aid!' },
 ];
 
@@ -35,22 +35,28 @@ const PageContent = ({ size = "md" }: { size?: "md" | "sm" | "xs" }) => {
     <Box display="flex" justifyContent="center" width="100%">
       <Box display="flex" flexDirection="column" width={widthMap[size]}>
         {/* Big Cool Header Text For Website Name */}
-        <Typography
-          variant="h2"
-          component="h1"
-          sx={{
-            fontWeight: 500,
-            pb: paddingMap[size],
-            mb: marginMap[size],
-            borderBottom: (theme) => `2px solid ${theme.palette.divider}`,
-            color: "transparent",
-            backgroundImage: (theme) =>
-              `linear-gradient(.25turn, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            WebkitBackgroundClip: "text",
-          }}
-        >
-          Teacher Aid
-        </Typography>
+        <Box display="flex" flexDirection="column" sx={{
+          pb: paddingMap[size],
+          mb: marginMap[size],
+          borderBottom: (theme) => `2px solid ${theme.palette.divider}`,
+        }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            sx={{
+              fontWeight: 500,
+              color: "transparent",
+              backgroundImage: (theme) =>
+                `linear-gradient(.25turn, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+              WebkitBackgroundClip: "text",
+            }}
+          >
+            TeacherAid
+          </Typography>
+          <Typography variant="h5" sx={{fontWeight: 500,}}>
+            Asking questions has never been easier!
+          </Typography>
+        </Box>
 
         {/* Classroom Code Entry */}
         <TextField
@@ -75,11 +81,8 @@ const PageContent = ({ size = "md" }: { size?: "md" | "sm" | "xs" }) => {
           Temporary Nav Buttons
         </Typography>
         <Box display="flex" width={widthMap[size]} gap={2}>
-          <RemixLink to="/studentView" style={{ textDecoration: 'none' }}>
-            <Button variant='contained'>Student View</Button>
-          </RemixLink>
           <RemixLink to="/TeacherView" style={{ textDecoration: 'none' }}>
-            <Button variant='contained'>Teacher View</Button>
+            <Button variant='contained'>Testing View</Button>
           </RemixLink>
         </Box>
       </Box>

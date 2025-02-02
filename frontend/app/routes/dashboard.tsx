@@ -46,7 +46,7 @@ export default function Dashboard() {
 					<Typography variant="h4" component="h1">
 						My Classrooms
 					</Typography>
-					<RemixLink to="/classroom_selection" style={{ textDecoration: "none" }}>
+					<RemixLink to="/teacher/classroomcreation" style={{ textDecoration: "none" }}>
 					<Button
 						variant="contained"
 						//startIcon={<AddIcon />}
