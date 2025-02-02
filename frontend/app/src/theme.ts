@@ -23,8 +23,11 @@ const darkTheme = createTheme({
       contrastText: '#141521',
     },
     error: {
-      main: red.A400,
+      main: '#de5050',
     },
+    warning: {
+      main: '#e7ab44',
+    }
   },
   typography: {
     fontFamily: '"Petrona", serif',

@@ -1,6 +1,7 @@
 import { Box, Button, TextField, FormGroup, FormControlLabel, Switch, Container } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Link as RemixLink} from '@remix-run/react';
+import darkTheme from '~/src/theme';
 
 
 const DeskGrid: React.FC = () => {
@@ -109,7 +110,7 @@ const DeskGrid: React.FC = () => {
                   sx={{
                     width: 50,
                     height: 50,
-                    backgroundColor: desk ? 'green' : 'black',
+                    backgroundColor: desk ? darkTheme.palette.primary.main : darkTheme.palette.background.paper,
                     border: '1px solid #000',
                     minWidth: 0,
                   }}

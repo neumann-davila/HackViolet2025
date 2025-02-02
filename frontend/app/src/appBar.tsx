@@ -13,13 +13,12 @@ function WebsiteIcon() {
   return(
     <SvgIcon>
       <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
+        width="64" height="64"
+        viewBox="0 0 64 64"
         fill="none"
       >
-        <path d="M12 24H0V0H12L5.73913 12.2553L12 24Z" fill="#8AA96A"/>
-        <path d="M12 24V0L24 24H12Z" fill="#C2D7AD"/>
+        <path d="M19.7285 62V7.4082H0.369141V1.95312H45.5273V7.4082H26.9062V62H19.7285Z" fill="#8AA96A"/>
+        <path d="M7.13281 62L25.5703 4.8125H35.5703L54.2031 62H47.0938L42.0547 46.7266H18.7734L13.9688 62H7.13281ZM20.3359 41.6484H40.4531L30.4531 9.30469L20.3359 41.6484Z" fill="#C2D7AD"/>
       </svg>
     </SvgIcon>
   );
@@ -64,7 +63,7 @@ function ResponsiveAppBar() {
                 textDecoration: 'none',
               }}
             >
-              Teacher Aid
+              TeacherAid
             </Typography>
           </div>
           {isLoggedIn ?  (
