@@ -11,161 +11,111 @@ export const meta: MetaFunction = () => [
   { name: 'A classroom tool to help bridge the gap between teacher and student', content: 'Welcome to Teacher Aid!' },
 ];
 
-export default function Index() {
-  const location = useLocation();
-  
-  // Find active tab index based on route
-  const getTabIndex = () => {
-    switch (location.pathname) {
-      case '/about': return 1;
-      case '/contact': return 2;
-      default: return 0;
-    }
+/* Page Content for Better Dynamic Scaling */
+const PageContent = ({ size = "md" }: { size?: "md" | "sm" | "xs" }) => {
+  const paddingMap = {
+    md: 3,
+    sm: 2,
+    xs: 1,
   };
 
+  const marginMap = {
+    md: 4,
+    sm: 3,
+    xs: 2,
+  };
+
+  const widthMap = {
+    md: "50%",
+    sm: "75%",
+    xs: "100%",
+  }
+
+  return(
+    <Box display="flex" justifyContent="center" width="100%">
+      <Box display="flex" flexDirection="column" width={widthMap[size]}>
+        {/* Big Cool Header Text For Website Name */}
+        <Typography
+          variant="h2"
+          component="h1"
+          sx={{
+            fontWeight: 500,
+            pb: paddingMap[size],
+            mb: marginMap[size],
+            borderBottom: (theme) => `2px solid ${theme.palette.divider}`,
+            color: "transparent",
+            backgroundImage: (theme) =>
+              `linear-gradient(.25turn, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            WebkitBackgroundClip: "text",
+          }}
+        >
+          Teacher Aid
+        </Typography>
+
+        {/* Classroom Code Entry */}
+        <TextField
+          id="code-entry"
+          label="Enter Classroom Join Code"
+          variant="outlined"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end" sx={{ marginRight: 1 }}>
+                  <IconButton edge="end" color="primary">
+                    <LoginIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        {/* Temporary Buttons to Navigate to Random Screens */}
+        <Typography variant="h5" sx={{mt: 8, mb: 2}}>
+          Temporary Nav Buttons
+        </Typography>
+        <Box display="flex" width={widthMap[size]} gap={2}>
+          <RemixLink to="/studentView" style={{ textDecoration: 'none' }}>
+            <Button variant='contained'>Student View</Button>
+          </RemixLink>
+          <RemixLink to="/TeacherView" style={{ textDecoration: 'none' }}>
+            <Button variant='contained'>Teacher View</Button>
+          </RemixLink>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default function Index() {
   return (
     <React.Fragment>
-      {/* Navigation Tabs */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-        <Tabs value={getTabIndex()} centered>
-          <Tab label="Home" component={RemixLink} to="/" />
-          <Tab label="About" component={RemixLink} to="/student_view" />
-          <Tab label="Contact" component={RemixLink} to="/teacher_view" />
-        </Tabs>
-      </Box>
-
       {/* Responsive Containers */}
+
+      {/* Large Screen */}
       <Container disableGutters maxWidth='xl' sx={{
         display: { xs: 'none', sm: 'none', md: 'grid'},
         mt: 12,
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%'}}>
-          <div style={{ display: 'flex', flexDirection: 'column', width: '50%'}}>
-            <Typography variant="h2" component="h1" sx={{
-              fontWeight: 500,
-              pb: 3,
-              mb: 4,
-              borderBottom: `2px solid ${darkTheme.palette.divider}`,
-              color: 'transparent',
-              backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-              WebkitBackgroundClip: 'text',
-            }}>
-              Teacher Aid
-            </Typography>
-            <TextField id="code-entry" label="Enter Classroom Join Code" variant="outlined"
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ marginRight: 1 }}>
-                    <IconButton edge="end" color="primary">
-                      <LoginIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}/>
-          </div>
-        </div>
+        <PageContent size="md"/>
       </Container>
-
+      
+      {/* Medium Screen */}
       <Container disableGutters maxWidth='xl' sx={{
-        display: { xs: 'none', sm: 'grid', md: 'none', lg: 'none', xl: 'none' },
+        display: { xs: 'none', sm: 'grid', md: 'none'},
         mt: 12,
         alignItems: 'center',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <Typography variant="h3" component="h1" sx={{
-            fontWeight: 500,
-            pb: 2,
-            mb: 3,
-            color: 'transparent',
-            backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-            WebkitBackgroundClip: 'text',
-            borderBottom: `2px solid ${darkTheme.palette.divider}`,
-          }}>
-            Teacher Aid
-          </Typography>
-        </div>
-        <Stack spacing={2}>
-          <div style={{ display: 'flex', alignItems: 'center'}}>
-            <Typography 
-            variant='h4' 
-            sx={{
-              mr: 4,
-              display: 'flex',
-              fontWeight: 500,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}>
-              Enter Code:
-            </Typography>
-            <TextField id="code-entry" label="" variant="standard" />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center'}}>
-            <Typography 
-              variant='h4' 
-              sx={{
-                mr: 4,
-                display: 'flex',
-                fontWeight: 500,
-                color: 'inherit',
-                textDecoration: 'none',
-              }}>
-              Are you a teacher? Make an account now!
-            </Typography>
-            <Button variant="contained">Sign Up</Button>
-          </div>
-        </Stack>
+        <PageContent size="sm"/>
       </Container>
-
+      
+      {/* Small Screen */}
       <Container disableGutters maxWidth='xl' sx={{
         display: { xs: 'grid', sm: 'none', md: 'none', lg: 'none', xl: 'none' },
         mt: 8,
         alignItems: 'center',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <Typography variant="h4" component="h1" sx={{
-            fontWeight: 500,
-            pb: 1,
-            mb: 2,
-            color: 'transparent',
-            backgroundImage: `linear-gradient(.25turn, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-            WebkitBackgroundClip: 'text',
-            borderBottom: `2px solid ${darkTheme.palette.divider}`,
-          }}>
-            Teacher Aid
-          </Typography>
-        </div>
-        <Stack spacing={2}>
-          <div style={{ display: 'flex', alignItems: 'center'}}>
-            <Typography 
-            variant='h4' 
-            sx={{
-              mr: 4,
-              display: 'flex',
-              fontWeight: 500,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}>
-              Enter Code:
-            </Typography>
-            <TextField id="code-entry" label="" variant="standard" />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center'}}>
-            <Typography 
-              variant='h4' 
-              sx={{
-                mr: 4,
-                display: 'flex',
-                fontWeight: 500,
-                color: 'inherit',
-                textDecoration: 'none',
-              }}>
-              Are you a teacher? Make an account now!
-            </Typography>
-            <Button variant="contained">Sign Up</Button>
-          </div>
-        </Stack>
+        <PageContent size="xs"/>
       </Container>
     </React.Fragment>
   );
