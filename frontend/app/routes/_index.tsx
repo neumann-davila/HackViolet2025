@@ -75,11 +75,8 @@ const PageContent = ({ size = "md" }: { size?: "md" | "sm" | "xs" }) => {
           Temporary Nav Buttons
         </Typography>
         <Box display="flex" width={widthMap[size]} gap={2}>
-          <RemixLink to="/studentView" style={{ textDecoration: 'none' }}>
-            <Button variant='contained'>Student View</Button>
-          </RemixLink>
           <RemixLink to="/TeacherView" style={{ textDecoration: 'none' }}>
-            <Button variant='contained'>Teacher View</Button>
+            <Button variant='contained'>Testing View</Button>
           </RemixLink>
         </Box>
       </Box>
