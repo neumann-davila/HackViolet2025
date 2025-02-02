@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { MetaFunction } from '@remix-run/node';
-import { Link as RemixLink, useLocation } from '@remix-run/react';
+import { Link as RemixLink} from '@remix-run/react';
 import { Typography, Box, Container, Tabs, Alert, TextField, Button, Paper} from '@mui/material';
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
