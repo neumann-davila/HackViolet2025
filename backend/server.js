@@ -55,7 +55,7 @@ app.post('/getUser', async (req, res) => {
   }
 })
 
-app.post('/newClassroom', async (req, res) => {
+app.put('/newClassroom', async (req, res) => {
   try {
     console.log(req.body);
     await MongoDBOrchestrator.newClassroom(req.body);

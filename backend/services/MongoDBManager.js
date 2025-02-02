@@ -62,7 +62,7 @@ await client.connect();
 const db = client.db("teacherAid");
 const classrooms = db.collection("classrooms");
 
-const p = await classrooms.insertMany(newClassroom);
+const p = await classrooms.insertMany([newClassroom]);
 console.log(p);
 await client.close();
 }

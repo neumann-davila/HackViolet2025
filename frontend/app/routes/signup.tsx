@@ -56,11 +56,11 @@ export default function SignUp() {
 		});
 
 		/* Use to retrieve data
-			* document.getElementById("result").innerHTML = localStorage.getItem("userName"); 
+		 * document.getElementById("result").innerHTML = localStorage.getItem("userName"); 
 		*/
 		localStorage.setItem("userName", username);
-
-	}
+		localStorage.setItem("status", "Teacher");
+	}	
   return (
     <React.Fragment>
       <Container maxWidth="xs">
