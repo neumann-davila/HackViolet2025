@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { MetaFunction } from '@remix-run/node';
-import { Link as RemixLink, useLocation } from '@remix-run/react';
+import { Link as RemixLink, useLocation, useNavigate } from '@remix-run/react';
 import { Typography, Box, Container, Tabs, Alert, TextField, Button, Paper} from '@mui/material';
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
@@ -10,6 +10,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function SignUp() {
+	const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ export default function SignUp() {
     // Simulate sign-up API call
     console.log("Signing up with:", { username, email, password });
     setError("");
-    alert(`Signed up as ${username}`);
+	navigate('/dashboard');
   };
 
 
