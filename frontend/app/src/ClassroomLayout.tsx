@@ -1,4 +1,5 @@
 import { Button } from '@mui/material';
+import { data } from '@remix-run/server-runtime';
 import React, { useState, useEffect } from 'react';
 
 export type Classroom = {
@@ -11,47 +12,117 @@ export type Classroom = {
 type ClassroomLayoutProps = {
   classroom: Classroom;
 };
+
+
 enum HelpRequired {
   NO_HELP,
   MINOR_HELP,
   MAJOR_HELP
 }
 
+type DeskGridData = {
+    occupied: boolean,
+    occupiedBy: string | null,
+    needsHelp: HelpRequired 
+  }
+
 
 const ClassroomLayout: React.FC<ClassroomLayoutProps> = ({ classroom }) => {
   const { name, rows, columns, desks } = classroom;
-  const [deskGrid, setDeskGrid] = useState<{ occupied: boolean; occupiedBy: string | null; needsHelp: boolean }[][]>([]);
+  const [deskGrid, setDeskGrid] = useState<DeskGridData[][]>(() => {
+    return Array.from({ length: rows }, () =>
+      Array.from({ length: columns }, () => ({
+      occupied: false,
+      occupiedBy: null,
+      needsHelp: HelpRequired.NO_HELP,
+    })))
+  });
+
   const [socket, setSocket] = useState<WebSocket | null>(null);
   
   // Student State Variables
   const [currentUser, setCurrentUser] = useState<number[]>([-1, -1])
   const [seatSelected, setSeatSelected] = useState(false);
+  const [dataPending, setDataPending] = useState(false);
 
   useEffect(() => {
-      const socket = new WebSocket('ws://localhost:3000');
-      setSocket(socket);
+    if(rows && columns) {
+      console.log(`Rows: ${rows}, Cols: ${columns}`)
+      setDeskGrid(Array.from({ length: rows }, () =>
+        Array.from({ length: columns }, () => ({
+          occupied: false,
+          occupiedBy: null,
+          needsHelp: HelpRequired.NO_HELP,
+        }))
+      ))
+    }
 
+    if(socket == null) {
+      const newSocket = new WebSocket('ws://localhost:5001');
+      setSocket(newSocket);
+
+      newSocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'DESK_STATE') {
+          setDeskGrid(data.payload);
+          console.log('Desk data received');
+          console.log(data.payload);
+        }
+      };
+
+      return () => {
+        newSocket.close();
+      };
+    }
+      
+
+    if (socket && dataPending) {
+      console.log(`Data Sent: ${deskGrid}`)
+      socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: deskGrid }));
+    }
+
+    if(socket != null) {
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === 'DESK_STATE') {
-          //setDesks(data.payload);
+          setDeskGrid(data.payload);
+          console.log('Desk data received');
+          console.log(data.payload);
         }
       };
 
       return () => {
         socket.close();
       };
-    }, []);
+    }
+    }, [rows, columns, dataPending]);
 
     const deskInteract = (row: number, col: number) => {
       const user = localStorage.getItem('status');
       if(user === 'Teacher') {
         
-      } else if (!seatSelected){
+      } else if (!seatSelected && !deskGrid[row][col].occupied) {
         setCurrentUser([row, col])
         setSeatSelected(true);
+
+        setDeskGrid(prevDeskGrid => {
+          const updatedGrid = prevDeskGrid.map((r, rowIndex) =>
+            r.map((desk, colIndex) =>
+              rowIndex === row && colIndex === col
+                ? { ...desk, occupied: true, occupiedBy: "Student", needsHelp: HelpRequired.NO_HELP }
+                : desk
+            )
+          );
+          
+          console.log("Updated DeskGrid:", updatedGrid);
+          setDataPending(true);
+          return updatedGrid; // Return the updated state
+        });
+        
+        console.log(deskGrid[row][col]);
+        
       }
-    }
+    } 
 
   return (
     <div className="classroom-layout">
@@ -82,11 +153,12 @@ const ClassroomLayout: React.FC<ClassroomLayoutProps> = ({ classroom }) => {
                   }}
                   onClick={() => deskInteract(rowIndex, colIndex)}
                   disabled={!desks[rowIndex][colIndex] as boolean}
-                >{currentUser[0] == rowIndex && currentUser[1] == colIndex? 'You': ''}</button>
+                >{currentUser[0] == rowIndex && currentUser[1] == colIndex? 'You': 
+                  !deskGrid?.[rowIndex]?.[colIndex]?.occupied? '' : 'Taken'}</button>
               ))
             )}
           </div>
-        </div>
+        </div>  
         <div style={{
           display: 'flex',
           justifyContent: 'center'
@@ -105,8 +177,8 @@ const ClassroomLayout: React.FC<ClassroomLayoutProps> = ({ classroom }) => {
           <Button onClick={() => {
             setSeatSelected(false);
           }} disabled={!seatSelected}>Chage Seat</Button>
-        </div></div>
-        
+          </div>
+        </div>
       </div>
   );
 };

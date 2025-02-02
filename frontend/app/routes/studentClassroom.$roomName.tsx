@@ -29,7 +29,7 @@ const StudentClassroom = () => {
   }
 
   useEffect(() => {
-    console.log(roomName);
+    console.log('Room Name: ' + roomName);
     getClassroom();
   }, [])
 

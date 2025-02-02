@@ -7,7 +7,7 @@ const TeacherFeed = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-        const socket = new WebSocket('ws://localhost:3000');
+        const socket = new WebSocket('ws://localhost:5001');
         setSocket(socket);
   
         socket.onmessage = (event) => {
