@@ -26,7 +26,6 @@ type DeskGridData = {
     needsHelp: HelpRequired 
   }
 
-
 const ClassroomLayout: React.FC<ClassroomLayoutProps> = ({ classroom }) => {
   const { name, rows, columns, desks } = classroom;
   const [deskGrid, setDeskGrid] = useState<DeskGridData[][]>(() => {
@@ -46,83 +45,59 @@ const ClassroomLayout: React.FC<ClassroomLayoutProps> = ({ classroom }) => {
   const [dataPending, setDataPending] = useState(false);
 
   useEffect(() => {
-    if(rows && columns) {
-      console.log(`Rows: ${rows}, Cols: ${columns}`)
-      setDeskGrid(Array.from({ length: rows }, () =>
-        Array.from({ length: columns }, () => ({
-          occupied: false,
-          occupiedBy: null,
-          needsHelp: HelpRequired.NO_HELP,
-        }))
-      ))
-    }
-
-    if(socket == null) {
-      const newSocket = new WebSocket('ws://localhost:5001');
-      setSocket(newSocket);
-
-      newSocket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === 'DESK_STATE') {
-          setDeskGrid(data.payload);
-          console.log('Desk data received');
-          console.log(data.payload);
-        }
-      };
-
-      return () => {
-        newSocket.close();
-      };
-    }
-      
-
-    if (socket && dataPending) {
-      console.log(`Data Sent: ${deskGrid}`)
-      socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: deskGrid }));
-    }
-
-    if(socket != null) {
+      const socket = new WebSocket('ws://localhost:5001');
+      setSocket(socket);
+  
       socket.onmessage = (event) => {
+        console.log(event)
         const data = JSON.parse(event.data);
         if (data.type === 'DESK_STATE') {
-          setDeskGrid(data.payload);
-          console.log('Desk data received');
-          console.log(data.payload);
+          if(data.payload.length !> 0) {
+            setDeskGrid(data.payload)
+            console.log('Desk data received:');
+            console.log(data.payload)
+          };
         }
       };
 
       return () => {
         socket.close();
       };
-    }
-    }, [rows, columns, dataPending]);
+    }, []);
 
     const deskInteract = (row: number, col: number) => {
       const user = localStorage.getItem('status');
       if(user === 'Teacher') {
         
       } else if (!seatSelected && !deskGrid[row][col].occupied) {
+
+        const newDesks = deskGrid.map((r, rowIndex) =>
+          r.map((desk, colIndex) =>
+            rowIndex === currentUser[0] && colIndex === currentUser[1]
+              ? { ...desk, occupied: false, occupiedBy: null, needsHelp: HelpRequired.NO_HELP }
+              : desk
+          )
+        );
+
         setCurrentUser([row, col])
         setSeatSelected(true);
+        const desks = newDesks.map((r, rowIndex) =>
+          r.map((desk, colIndex) =>
+            rowIndex === row && colIndex === col
+              ? { ...desk, occupied: true, occupiedBy: "Student", needsHelp: HelpRequired.NO_HELP }
+              : desk
+          )
+        );
+        setDeskGrid(desks);
 
-        setDeskGrid(prevDeskGrid => {
-          const updatedGrid = prevDeskGrid.map((r, rowIndex) =>
-            r.map((desk, colIndex) =>
-              rowIndex === row && colIndex === col
-                ? { ...desk, occupied: true, occupiedBy: "Student", needsHelp: HelpRequired.NO_HELP }
-                : desk
-            )
-          );
-          
-          console.log("Updated DeskGrid:", updatedGrid);
-          setDataPending(true);
-          return updatedGrid; // Return the updated state
-        });
-        
-        console.log(deskGrid[row][col]);
-        
+        if (socket) {
+          console.log(`Data Sent: `)
+          console.log(JSON.stringify(deskGrid));
+          socket.send(JSON.stringify({ type: 'DESK_STATE_UPDATE', payload: desks }));
+          setDataPending(false)
+        }
       }
-    } 
+    }
 
   return (
     <div className="classroom-layout">
