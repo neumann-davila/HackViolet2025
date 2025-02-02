@@ -34,6 +34,7 @@ const PageContent = ({ size = "md" }: { size?: "md" | "sm" | "xs" }) => {
   return(
     <Box display="flex" justifyContent="center" width="100%">
       <Box display="flex" flexDirection="column" width={widthMap[size]}>
+        {/* Big Cool Header Text For Website Name */}
         <Typography
           variant="h2"
           component="h1"
@@ -50,6 +51,8 @@ const PageContent = ({ size = "md" }: { size?: "md" | "sm" | "xs" }) => {
         >
           Teacher Aid
         </Typography>
+
+        {/* Classroom Code Entry */}
         <TextField
           id="code-entry"
           label="Enter Classroom Join Code"
@@ -66,6 +69,8 @@ const PageContent = ({ size = "md" }: { size?: "md" | "sm" | "xs" }) => {
             },
           }}
         />
+
+        {/* Temporary Buttons to Navigate to Random Screens */}
         <Typography variant="h5" sx={{mt: 8, mb: 2}}>
           Temporary Nav Buttons
         </Typography>
@@ -86,13 +91,16 @@ export default function Index() {
   return (
     <React.Fragment>
       {/* Responsive Containers */}
+
+      {/* Large Screen */}
       <Container disableGutters maxWidth='xl' sx={{
         display: { xs: 'none', sm: 'none', md: 'grid'},
         mt: 12,
       }}>
         <PageContent size="md"/>
       </Container>
-
+      
+      {/* Medium Screen */}
       <Container disableGutters maxWidth='xl' sx={{
         display: { xs: 'none', sm: 'grid', md: 'none'},
         mt: 12,
@@ -100,7 +108,8 @@ export default function Index() {
       }}>
         <PageContent size="sm"/>
       </Container>
-
+      
+      {/* Small Screen */}
       <Container disableGutters maxWidth='xl' sx={{
         display: { xs: 'grid', sm: 'none', md: 'none', lg: 'none', xl: 'none' },
         mt: 8,
