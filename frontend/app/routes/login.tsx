@@ -31,9 +31,9 @@ export default function Login() {
     // Simulate login API call
 		if(loginSuccess) {
 			console.log("Logging in with:", { email, password });
-			navigate('/dashboard')
+			navigate('/dashboard');
 		} else {
-			setError("Login Failed")
+			setError("Login Failed");
 		}
 
   };
