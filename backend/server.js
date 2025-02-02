@@ -60,7 +60,15 @@ app.post('/newClassroom', async (req, res) => {
 });
 
 app.post('/classroomData', async (req, res) => {
-  const {} = req.body;
+  // put like a name thing, name sent in req, send it to mongoDB function (getClassroom) using .find and filter similar structure to user one. return back to res
+  const { roomName } = req.body;
+  try {
+    classroomData = await MongoDBOrchestrator.getClassroom(roomName);
+    res.status(200),json(userData);
+  } catch (error) {
+    console.error("Error with MongoDB Atlas: classroomData");
+    res.status(500).json({error: 'Something went wrong with MongoDB Atlas: classroomData'});
+  }
 });
 
 const PORT = process.env.PORT || 5000;

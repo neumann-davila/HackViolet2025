@@ -39,7 +39,7 @@ async function getUser(userEmail) {
 
 }
 
-async function getClassroom(objectId) {
+async function getClassroom(roomName) {
 
     // Connect to the Atlas cluster
     await client.connect();
@@ -48,7 +48,7 @@ async function getClassroom(objectId) {
     const db = client.db("teacherAid");
     const classrooms = db.collection("classrooms");
 
-    const document = await classrooms.find(ObjectID(objectId));
+    const document = await classrooms.find(className(roomName));
     console.log("Document found:\n" + JSON.stringify(document));
 
     await client.close();
