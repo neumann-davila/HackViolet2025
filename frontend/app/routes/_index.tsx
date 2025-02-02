@@ -16,6 +16,7 @@ export default function Index() {
   
   // Find active tab index based on route
   const getTabIndex = () => {
+    localStorage.clear();
     switch (location.pathname) {
       case '/about': return 1;
       case '/contact': return 2;
