@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { MetaFunction } from '@remix-run/node';
-import { Link as RemixLink} from '@remix-run/react';
+import { Link as RemixLink, useNavigate} from '@remix-run/react';
 import { Typography, Box, Container, Tabs, Alert, TextField, Button, Paper} from '@mui/material';
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
@@ -10,7 +10,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function Login() {
-
+	const navigate = useNavigate();
   // State for form inputs and error handling
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,9 +30,10 @@ export default function Login() {
 		attemptLogin();
     // Simulate login API call
 		if(loginSuccess) {
-			console.log("Logging in with:", { email, password });
-			setError("");
-			alert(`Logged in as ${email}`);
+			//console.log("Logging in with:", { email, password });
+			//setError("");
+			//alert(`Logged in as ${email}`);
+			navigate('/dashboard')
 		} else {
 			setError("Login Failed")
 		}
