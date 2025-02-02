@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link as RemixLink} from '@remix-run/react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -22,35 +22,6 @@ function WebsiteIcon() {
       </svg>
     </SvgIcon>
   );
-}
-
-function stringToColor(string: string) {
-  let hash = 0;
-  let i;
-
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  let color = '#';
-
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  /* eslint-enable no-bitwise */
-
-  return color;
-}
-
-function stringAvatar(name: string) {
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-  };
 }
 
 function ResponsiveAppBar() {
@@ -96,10 +67,9 @@ function ResponsiveAppBar() {
             >
               Are you a teacher?
             </Typography>
-            <Button variant="contained" sx={{mr: 4}}>Login</Button>
-            <Avatar {...stringAvatar('Neumann Davila')} 
-            sx={{ cursor: "pointer" }}
-            />
+            <RemixLink to="/login" style={{ textDecoration: "none" }}>
+              <Button variant="contained">Login</Button>
+            </RemixLink>
           </div>
         </Toolbar>
       </Container>

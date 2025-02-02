@@ -13,7 +13,7 @@ export default function Copyright() {
       }}
     >
       {'Copyright © '}
-      Replace This With Your Name!
+      TeacherAid
       {new Date().getFullYear()}.
     </Typography>
   );

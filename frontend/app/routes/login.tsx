@@ -118,6 +118,20 @@ export default function Login() {
             	</Button>
             </Box>
           </Box>
+
+					{/* Signup link */}
+					<Typography variant="body2" sx={{ mt: 2 }}>
+						Don't have an account?{" "}
+						<RemixLink to="/signup" style={{ textDecoration: "none", color: "inherit" }}>
+							<Typography
+								component="span"
+								sx={{ color: "primary.main", fontWeight: 500, cursor: "pointer" }}
+							>
+								Sign up
+							</Typography>
+						</RemixLink>
+					</Typography>
+
         </Paper>
       </Container>
     </React.Fragment>
