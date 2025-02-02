@@ -13,7 +13,7 @@ export const meta: MetaFunction = () => [
 
 export default function Index() {
   const location = useLocation();
-
+  
   // Find active tab index based on route
   const getTabIndex = () => {
     switch (location.pathname) {

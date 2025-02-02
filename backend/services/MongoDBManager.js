@@ -40,20 +40,25 @@ async function getUser(userEmail) {
 }
 
 async function getClassroom(roomName) {
+    try{
+        // Connect to the Atlas cluster
+        await client.connect();
 
-    // Connect to the Atlas cluster
-    await client.connect();
+        // Get the database and collection on which to run the operation
+        const db = client.db("teacherAid");
+        const classrooms = db.collection("classrooms");
 
-    // Get the database and collection on which to run the operation
-    const db = client.db("teacherAid");
-    const classrooms = db.collection("classrooms");
+        const filter = {"name": roomName};
 
-    const document = await classrooms.find(className(roomName));
-    console.log("Document found:\n" + JSON.stringify(document));
+        const document = await classrooms.findOne(filter);
+        console.log("Document found:\n" + JSON.stringify(document));
+        return document;
 
-    await client.close();
-
-    return document;
+    } catch (error) {
+        throw error;
+    } finally {
+        await client.close();
+    }
 }
 
 async function newClassroom(newClassroom) {

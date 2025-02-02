@@ -373,9 +373,3 @@ export default function ChatApp() {
     </Container>
   );
 }
-
-
-
-
-
-

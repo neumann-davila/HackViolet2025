@@ -1,40 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 
-type Classroom = {
-  _id: string;
-  className: string;
-  rows: number;
-  columns: number;
-  eliminatedColumns: number[];
-  eliminatedRows: number[];
-  eliminatedSeats: [number, number][];
+export type Classroom = {
+  name: string,
+  rows: number,
+  columns: number,
+  desks: Boolean[][]
 };
 
-type ClassroomLayoutProps = {
+export type ClassroomLayoutProps = {
   classroom: Classroom;
 };
 
 const ClassroomLayout: React.FC<ClassroomLayoutProps> = ({ classroom }) => {
-  const { rows, columns, eliminatedColumns, eliminatedRows, eliminatedSeats } = classroom;
+  const { name, rows, columns, desks } = classroom;
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  
 
-  const isSeatEliminated = (row: number, col: number) => {
-    // Check if the seat is in the eliminatedSeats array
-    return eliminatedSeats.some(([r, c]) => r === row && c === col);
-  };
+  useEffect(() => {
+      const socket = new WebSocket('ws://localhost:3000');
+      setSocket(socket);
 
-  const isRowEliminated = (row: number) => {
-    return eliminatedRows.includes(row);
-  };
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'DESK_STATE') {
+          //setDesks(data.payload);
+        }
+      };
 
-  const isColumnEliminated = (col: number) => {
-    return eliminatedColumns.includes(col);
-  };
+      return () => {
+        socket.close();
+      };
+    }, []);
 
-  const renderSeat = (row: number, col: number) => {
-    if (!isSeatEliminated(row, col) && !isRowEliminated(row) && !isColumnEliminated(col)) {
-        return <div key={`${row}-${col}`} className="seat"></div>;
+    const deskInteract = () => {
+
     }
-  };
 
   return (
     <div className="classroom-layout">
@@ -46,11 +46,30 @@ const ClassroomLayout: React.FC<ClassroomLayoutProps> = ({ classroom }) => {
           gap: "10px",
         }}
       >
-        {Array.from({ length: rows }).map((_, row) =>
-          Array.from({ length: columns }).map((_, col) => renderSeat(row + 1, col + 1))
-        )}
+        <div
+        style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${columns}, 50px)`,
+              gridGap: '5px',
+            }}
+          >
+            {desks.map((row, rowIndex) =>
+              row.map((desk, colIndex) => (
+                <button
+                  key={`${rowIndex}-${colIndex}`}
+                  style={{
+                    width: '50px',
+                    height: '50px',
+                    backgroundColor: desks[rowIndex][colIndex] ? 'green' : 'none',
+                    border: '1px solid #000',
+                  }}
+                  onClick={() => deskInteract()}
+                />
+              ))
+            )}
+          </div>
+        </div>
       </div>
-    </div>
   );
 };
 

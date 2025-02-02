@@ -43,7 +43,9 @@ const DeskGrid: React.FC = () => {
 				},
 			body: JSON.stringify({ 
         name: "Default",
-        layout: desks
+        rows: rows,
+        columns: cols,
+        desks: desks
       })
 		});
 
