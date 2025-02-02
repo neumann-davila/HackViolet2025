@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, TextField, Button, Typography, List, ListItem, ListItemText, Select, MenuItem, Modal, Tooltip } from '@mui/material';
+import TeacherFeed from '~/src/teacherFeed';
 import ClassroomLayout, {Classroom} from '~/src/ClassroomLayout';
+import { useParams } from 'react-router-dom';
 
-const TeacherClassroom: React.FC<{classroomName: string}> = (classroomName) => {
+const TeacherClassroom = () => {
   const [classroom, setClassroom] = useState<Classroom>({
     name: '',
     rows: 0,
     columns: 0,
     desks: [[]]
-  })
+  });
+  const { roomName } = useParams(); 
 
   const getClassroom = async () => {
     const res = await fetch('http://localhost:5000/classroomData', {
@@ -17,7 +20,7 @@ const TeacherClassroom: React.FC<{classroomName: string}> = (classroomName) => {
         'Content-Type': 'application/json',
 				},
 			body: JSON.stringify({
-        name: "Default"
+        name: roomName
        })
 		});    
 
@@ -27,11 +30,18 @@ const TeacherClassroom: React.FC<{classroomName: string}> = (classroomName) => {
   }
 
   useEffect(() => {
+    console.log(roomName);
     getClassroom();
   }, [])
 
-  return (<div>
+  return (<div
+  style={{
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center'
+  }}>
     <ClassroomLayout classroom={ classroom }/>
+    <TeacherFeed />
   </div>);
 }
 
